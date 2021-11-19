@@ -32,27 +32,44 @@ uniformDist.append(100)
 uniformDist_cut = pd.cut(uniformDist,  # 必填项  , 被cut 的数据对象,只能cut 一列
                          bins=4,  # 必填项  , cut 的分箱数
                          precision=0  # 非必填项,  分箱边界值精确度，0 代表整数
+
                          )
+
+uniformDist_cut = pd.cut(uniformDist,  # 必填项  , 被cut 的数据对象,只能cut 一列
+                         bins=4,  # 必填项  , cut 的分箱数
+                         precision=0,  # 非必填项,  分箱边界值精确度，0 代表整数
+                         labels=["fast", "medium", "slow", "cripple"]
+                         )
+
 uniformDist_qcut = pd.qcut(uniformDist,  # 必填项  , 被cut 的数据对象,只能cut 一列
                            q=4,  # 必填项  , cut 的分箱数
                            precision=0  # 非必填项,  分箱边界值精确度，0 代表整数
                            )
 
+uniformDist_qcut = pd.qcut(uniformDist,  # 必填项  , 被cut 的数据对象,只能cut 一列
+                           q=4,  # 必填项  , cut 的分箱数
+                           precision=0,  # 非必填项,  分箱边界值精确度，0 代表整数
+                           labels=["fast", "medium", "slow", "cripple"]
+                           )
+
 print("---------------uniformDist------------------------------------------")
 print("均匀分布成绩   %s " % uniformDist)
+print("")
+print("")
 print("cut  分箱categories  %s " % uniformDist_cut.categories)
 print("qcut 分箱categories  %s " % uniformDist_qcut.categories)
-
+print("")
+print("")
 print("cut  分箱codes %s " % uniformDist_cut.codes)
 print("qcut 分箱codes %s " % uniformDist_qcut.codes)
-
+print("")
+print("")
 print("cut  分箱ordered %s " % uniformDist_cut.ordered)
 print("qcut 分箱ordered %s " % uniformDist_qcut.ordered)
-
-
-print("cut  分箱labels %s " % uniformDist_cut.labels)
-print("qcut 分箱labels %s " % uniformDist_qcut.labels)
-
+print("")
+print("")
+print("cut  分箱labels %s " % uniformDist_cut.__getitem__("fast"))
+print("qcut 分箱labels %s " % uniformDist_qcut.__getitem__("fast"))
 
 print("---------------------------------------------------------")
 
