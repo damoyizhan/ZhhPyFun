@@ -30,7 +30,7 @@ def UniformCutTest():
     uniformDist = uniformDist.tolist()
     uniformDist.append(60)
     uniformDist.append(100)
-
+    uniformDist.sort()
     uniformDist_cut = pd.cut(uniformDist,  # 必填项  , 被cut 的数据对象,只能cut 一列
                              bins=4,  # 必填项  , cut 的分箱数
                              precision=0  # 非必填项,  分箱边界值精确度，0 代表整数
@@ -76,8 +76,12 @@ def UniformCutTest():
     # todo:打印每个分箱的数据量
     # todo:打印每个分箱的边界值
 
+    print(uniformDist_cut.__dict__)
+    print(uniformDist_cut.categories.__dict__)
+    print(uniformDist_cut.categories(['fast']))
+    # print( uniformDist_cut(['fast', 'medium', 'slow', 'cripple']).values)
 
-    print(uniformDist_cut.categories.CategoricalDtype)
+    # print(uniformDist_cut.categories.CategoricalDtype)
     print("---------------------------------------------------------")
 
 
