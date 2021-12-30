@@ -63,17 +63,27 @@ def IV_column(Y_total, N_total, __column):
     计算指定列所有分箱的woe值
     """
 
-# 计算逻辑：
-# i        = 第i分箱
-# Y[i]     = 第i分箱 中y=1 的个数
-# N[i]     = 第i分箱 中y=0 的个数
-# Y[total] =         y=1 的个数
-# N[total] =         y=0 的个数
-# Py[i]    = Y[i] /Y[total] = 第i分箱 中y=1 的个数 / y=1 的个数
-# Pn[i]    = N[i] /N[total] = 第i分箱 中y=0 的个数 / y=0 的个数
-# woe[i]   = ln(Py[i]/Pn[i])
-# iv[i]    = (Py[i]-Pn[i])*woe[i]
-# iv       = sum(iv[i])
+    # 计算逻辑：
+    # i        = 第i分箱
+    # Y[i]     = 第i分箱 中y=1 的个数
+    # N[i]     = 第i分箱 中y=0 的个数
+    # Y[total] =         y=1 的个数
+    # N[total] =         y=0 的个数
+    # Py[i]    = Y[i] /Y[total] = 第i分箱 中y=1 的个数 / y=1 的个数
+    # Pn[i]    = N[i] /N[total] = 第i分箱 中y=0 的个数 / y=0 的个数
+    # woe[i]   = ln(Py[i]/Pn[i])
+    # iv[i]    = (Py[i]-Pn[i])*woe[i]
+    # iv       = sum(iv[i])
+
+    # 计算Y[i] 和N[i]
+    Y_i = df.groupby(__column)
+
+    print(Y_i)
+    raise Exception("主动抛出错误")
+
+
+
+    IV = IV_list.sum()
 
     IV = 0
     for groupkey in df.groupby(__column).groups.keys():
@@ -82,7 +92,9 @@ def IV_column(Y_total, N_total, __column):
     print("==列：" + __column + " IV值" + str(IV))
 
 
+# ##############################################################################################################
 
+print("==start                   ==============================================================")
 pd.set_option('display.max_columns', 1000000)
 pd.set_option('display.max_rows', 1000000)
 pd.set_option('display.max_colwidth', 1000000)
@@ -97,7 +109,7 @@ print("count_total  :" + str(count_total) + "\n"
                                             "Y_total :" + str(Y_total) + "\n"
                                                                          "N_total :" + str(N_total) + "\n")
 
-print("==循环计算每一列的WOE ==============================================================")
+print("==循环计算每一列的IV ==============================================================")
 for column in df.columns:
 
     # 原始数据列不参与计算
@@ -105,7 +117,7 @@ for column in df.columns:
         continue
 
     # 计算一个列的woe值
-    print("==计算 " + column + " 的woe 值 ==============================================================")
+    print("==计算 " + column + " 的IV 值 ==============================================================")
     IV_column(Y_total, N_total, column)
 
 #

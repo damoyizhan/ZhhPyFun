@@ -21,7 +21,6 @@ import os
 import sys
 import pandas as pd
 import math
-from pprint import pprint
 
 curPath = os.path.abspath(os.path.dirname(__file__))
 rootPath = curPath[:curPath.find("iv_analysis") + len("iv_analysis")]
@@ -29,12 +28,10 @@ sys.path.append(rootPath)
 
 from py02_cut import df
 
-
 def IV_group(Y_total, N_total, __column, __groupkey):
     """
     计算指定分箱的woe值
     """
-
     print("==计算 列：" + __column + "   分箱：" + str(__groupkey) + " 的woe 值 ==============================================================")
 
     Y_i = df.groupby([__column, 'y'])['y'].count()[__groupkey][1]
@@ -51,11 +48,6 @@ def IV_group(Y_total, N_total, __column, __groupkey):
     print("==WOE_i:" + str(WOE_i))
     print("==IV_i :" + str(IV_i))
     return IV_i
-    # todo /这部分需要改写，按照分组逐个计算woe 效率过低
-    # print(y_i)
-    # print(y_i[__groupkey][1])
-    # print(y_i[__groupkey][0])
-    # todo /
 
 
 def IV_column(Y_total, N_total, __column):
@@ -64,10 +56,9 @@ def IV_column(Y_total, N_total, __column):
     """
     IV = 0
     for groupkey in df.groupby(__column).groups.keys():
-        IV+=IV_group(Y_total, N_total, __column, groupkey)
+        IV += IV_group(Y_total, N_total, __column, groupkey)
 
-    print("==列："+__column+ " IV值" + str(IV))
-
+    print("==列：" + __column + " IV值" + str(IV))
 
 
 pd.set_option('display.max_columns', 1000000)
@@ -94,41 +85,3 @@ for column in df.columns:
     # 计算一个列的woe值
     print("==计算 " + column + " 的woe 值 ==============================================================")
     IV_column(Y_total, N_total, column)
-
-#
-#
-#
-# df['cut_group_xf'] = pd.cut(df['xf'], bins=4, precision=0)
-# df['cut_group_xi'] = pd.cut(df['xi'], bins=4, precision=0)
-#
-# # 枚举类型的，枚举值即为分箱值，不做cut
-# # 下面这段代码有误，无法cut varchar 类型的 枚举值
-# # df['cut_group_xv'] = pd.cut(df['xv'], bins=4)  # varchar 类型不适用 precision参数
-#
-# df['cut_group_xv'] = df['xv']
-#
-# # TODO: 合并小分箱，连续分箱需要连续合并，枚举分箱可以小+小合并
-#
-#
-# # pprint(df)
-
-# 计算每个字段的woe
-
-# pprint(df)
-
-# print(df.__dict__)
-
-# [99 rows x 7 columns]
-# {'_is_copy': None, '_mgr': BlockManager
-# Items: Index(['xf', 'xi', 'xv', 'y', 'cut_group_xf', 'cut_group_xi', 'cut_group_xv'], dtype='object')
-# Axis 1: RangeIndex(start=0, stop=99, step=1)
-# NumericBlock: slice(0, 1, 1), 1 x 99, dtype: float64
-# NumericBlock: slice(1, 5, 2), 2 x 99, dtype: int64
-# ObjectBlock: slice(2, 3, 1), 1 x 99, dtype: object
-# CategoricalBlock: slice(4, 5, 1), 1 x 99, dtype: category
-# CategoricalBlock: slice(5, 6, 1), 1 x 99, dtype: category
-# ObjectBlock: slice(6, 7, 1), 1 x 99, dtype: object, '_item_cache': {'xf': 0     265.2829
-
-
-# print(df.columns)
-# print("==============================================")
