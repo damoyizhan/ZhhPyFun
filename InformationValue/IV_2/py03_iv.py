@@ -49,16 +49,25 @@ def IV_column(df_column, Y_total, N_total, __column):
     # iv[i]    = (Py[i]-Pn[i])*woe[i]
     # iv       = sum(iv[i])
 
-    # 计算Y[i] 和N[i]
+
     logger.info("\n %s" % df_column)
-    # Y_N_i = df_column.groupby([__column, 'y']).count()
+    # 计算Y[i]  和N[i]
+    YN_i = df_column.groupby([__column, 'y'])['y'].count()
+    logger.info(YN_i)
+
+
 
     logger.info("--------------------------------------------------------------------------------")
-    Y_N_i = df_column.groupby([__column, 'y']).count()
-    Y_N_i = df_column.groupby([__column]).count()
-    logger.info(Y_N_i)
+    # 计算Py[i] 和Pn[i]
+    Pyn_i = YN_i/N_total
+    logger.info(Pyn_i)
+    exit(1)
 
-    raise Exception("主动抛出错误")
+    # raise Exception("主动抛出错误")
+    # Y_N_i = df_column.groupby([__column, 'y']).groups
+    # logger.info(Y_N_i)
+    # Y_N_i = df_column.groupby([__column, 'y']).count()
+    # logger.info(Y_N_i)
     # logger.info(Y_N_i.__module__)
     # logger.info(Y_N_i.__dict__)
 
