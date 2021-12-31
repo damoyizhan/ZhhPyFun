@@ -29,5 +29,6 @@ df['cut_group_xv'] = '['+df['xv']+']'
 
 # TODO: 合并小分箱，连续分箱需要连续合并，枚举分箱可以小+小合并
 
-
+# 过滤，只保留分箱结果，去掉原始值
+df = df.filter(items=['cut_group_xf', 'cut_group_xi', 'cut_group_xv', 'y'])
 # pprint(df)

@@ -16,49 +16,23 @@ iv       = sum(iv[i])
 
 todo 处理变量的分组中出现响应比例为0或100%的情况
 """
-
 import os
 import sys
 import pandas as pd
 import math
-from pprint import pprint
 
 curPath = os.path.abspath(os.path.dirname(__file__))
 rootPath = curPath[:curPath.find("iv_analysis") + len("iv_analysis")]
 sys.path.append(rootPath)
 
 from py02_cut import df
+from log.logger import Logger
+
+log_file = os.path.join(os.sep, rootPath, "run.log")
+logger = Logger().getLogger(__file__, log_file, "INFO")
 
 
-def IV_group(Y_total, N_total, __column, __groupkey):
-    """
-    计算指定分箱的woe值
-    """
-
-    print("==计算 列：" + __column + "   分箱：" + str(__groupkey) + " 的woe 值 ==============================================================")
-
-    Y_i = df.groupby([__column, 'y'])['y'].count()[__groupkey][1]
-    N_i = df.groupby([__column, 'y'])['y'].count()[__groupkey][0]
-    Py_i = Y_i / Y_total
-    PN_i = N_i / N_total
-    WOE_i = math.log(Py_i / PN_i)
-    IV_i = (Py_i - PN_i) * WOE_i
-
-    print("==Y_i  :" + str(Y_i))
-    print("==N_i  :" + str(N_i))
-    print("==Py_i :" + str(Py_i))
-    print("==PN_i :" + str(PN_i))
-    print("==WOE_i:" + str(WOE_i))
-    print("==IV_i :" + str(IV_i))
-    return IV_i
-    # todo /这部分需要改写，按照分组逐个计算woe 效率过低
-    # print(y_i)
-    # print(y_i[__groupkey][1])
-    # print(y_i[__groupkey][0])
-    # todo /
-
-
-def IV_column(Y_total, N_total, __column):
+def IV_column(df_column, Y_total, N_total, __column):
     """
     计算指定列所有分箱的woe值
     """
@@ -76,12 +50,26 @@ def IV_column(Y_total, N_total, __column):
     # iv       = sum(iv[i])
 
     # 计算Y[i] 和N[i]
-    Y_i = df.groupby(__column)
+    logger.info("\n %s" % df_column)
+    # Y_N_i = df_column.groupby([__column, 'y']).count()
 
-    print(Y_i)
+    logger.info("--------------------------------------------------------------------------------")
+    Y_N_i = df_column.groupby([__column, 'y']).count()
+    Y_N_i = df_column.groupby([__column]).count()
+    logger.info(Y_N_i)
+
     raise Exception("主动抛出错误")
+    # logger.info(Y_N_i.__module__)
+    # logger.info(Y_N_i.__dict__)
 
+    #    df[(df[‘column_name’] == target_value)]
 
+    logger.info(Y_N_i)
+
+    Py_i = Y_N_i[Y_N_i['y'] == 1] / Y_total
+    logger.info(Py_i)
+    # Py_i = Y_N_i[] / Y_total
+    # logger.info(Py_i)
 
     IV = IV_list.sum()
 
@@ -94,22 +82,23 @@ def IV_column(Y_total, N_total, __column):
 
 # ##############################################################################################################
 
-print("==start                   ==============================================================")
+logger.debug("==start                   ==============================================================")
 pd.set_option('display.max_columns', 1000000)
 pd.set_option('display.max_rows', 1000000)
 pd.set_option('display.max_colwidth', 1000000)
 pd.set_option('display.width', 1000000)
-print(df)
-print("==计算 Y[total] 和 N[total] ==============================================================")
+logger.debug(df)
+logger.info("==计算 Y[total] 和 N[total] ==============================================================")
 count_total = df.groupby('y')['y'].count()
 Y_total = count_total[1]
 N_total = count_total[0]
 
-print("count_total  :" + str(count_total) + "\n"
-                                            "Y_total :" + str(Y_total) + "\n"
-                                                                         "N_total :" + str(N_total) + "\n")
+logger.debug("count_total  :" + str(count_total))
+logger.info("Y_total :" + str(Y_total))
+logger.info("N_total :" + str(N_total))
 
-print("==循环计算每一列的IV ==============================================================")
+logger.info("==循环计算每一列的IV ==============================================================")
+
 for column in df.columns:
 
     # 原始数据列不参与计算
@@ -117,8 +106,11 @@ for column in df.columns:
         continue
 
     # 计算一个列的woe值
-    print("==计算 " + column + " 的IV 值 ==============================================================")
-    IV_column(Y_total, N_total, column)
+    logger.info("==计算 " + column + " 的IV 值 ==============================================================")
+
+    df_column = df[[column, 'y']]
+    logger.debug(df_column)
+    IV_column(df_column, Y_total, N_total, column)
 
 #
 #
