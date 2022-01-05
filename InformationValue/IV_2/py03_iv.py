@@ -49,19 +49,27 @@ def IV_column(df_column, Y_total, N_total, __column):
     # iv[i]    = (Py[i]-Pn[i])*woe[i]
     # iv       = sum(iv[i])
 
-
     logger.info("\n %s" % df_column)
     # 计算Y[i]  和N[i]
-    YN_i = df_column.groupby([__column, 'y'])['y'].count()
-    logger.info(YN_i)
+    # YN_i = pd.DataFrame(df_column.groupby([__column, 'y'])['y'].count())
+    YN_i = df_column.groupby([__column, 'y'])['y'].count().to_frame()
 
-
-
+    logger.info("\n %s" % YN_i)
     logger.info("--------------------------------------------------------------------------------")
     # 计算Py[i] 和Pn[i]
-    Pyn_i = YN_i/N_total
+
+
+    Pyn_i = YN_i['y' == 1]
+    # logger.info(YN_i.describe())
+    #
+    # logger.info(YN_i.keys())
+    #
+    # logger.info(YN_i.columns)
     logger.info(Pyn_i)
     exit(1)
+    #  ##/ Y_total
+
+    # logger.info(Pyn_i)
 
     # raise Exception("主动抛出错误")
     # Y_N_i = df_column.groupby([__column, 'y']).groups
