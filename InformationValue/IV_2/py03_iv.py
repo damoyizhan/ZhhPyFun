@@ -18,6 +18,8 @@ todo 处理变量的分组中出现响应比例为0或100%的情况
 """
 import os
 import sys
+
+import numpy as np
 import pandas as pd
 import math
 
@@ -50,23 +52,46 @@ def IV_column(df_column, Y_total, N_total, __column):
     # iv       = sum(iv[i])
 
     logger.info("\n %s" % df_column)
+
     # 计算Y[i]  和N[i]
-    # YN_i = pd.DataFrame(df_column.groupby([__column, 'y'])['y'].count())
-    YN_i = df_column.groupby([__column, 'y'])['y'].count().to_frame()
+    YN_i = df_column.groupby([__column, 'y'], as_index=False)['cnt'].count()
+    logger.info("\n %s" % YN_i)
+    logger.info("--------------------------------------------------------------------------------")
+
+    # 计算Py[i] 和Pn[i]
+    YN_i['pct'] = YN_i['cnt'] * YN_i['y'] / Y_total + YN_i['cnt'] * (1 - YN_i['y']) / N_total
 
     logger.info("\n %s" % YN_i)
     logger.info("--------------------------------------------------------------------------------")
-    # 计算Py[i] 和Pn[i]
+    # 计算 woe[i]   = ln(Py[i]/Pn[i])
 
+    PY_i = YN_i[YN_i['y'] == 1]
+    PN_i = YN_i[YN_i['y'] == 0]
+    PY_i.set_index(['cut_group_xf'], inplace=True)
+    PN_i.set_index(['cut_group_xf'], inplace=True)
 
-    Pyn_i = YN_i['y' == 1]
-    # logger.info(YN_i.describe())
+    WOE_i = PY_i.div(PN_i, axis=0)
+    WOE_i['woe'] = np.log(WOE_i['pct'])
+
+    # logger.info("\n %s" % YN_i[YN_i['y'] == 1])
+    # logger.info("\n %s" % YN_i[YN_i['y'] == 0])
+
+    # logger.info("\n %s" % PY_i.div(PN_i, axis=0))
+    # logger.info("\n %s" % WOE_i)
+
+    # 计算 iv[i] = (Py[i] - Pn[i]) * woe[i]
+
+    IV_i= (PY_i -PN_i)*WOE_i
+    logger.info("\n %s" % PY_i)
+    logger.info("\n %s" % PN_i)
+    logger.info("\n %s" % IV_i)
+    exit(1)
     #
     # logger.info(YN_i.keys())
     #
     # logger.info(YN_i.columns)
-    logger.info(Pyn_i)
-    exit(1)
+    # logger.info(Pyn_i)
+
     #  ##/ Y_total
 
     # logger.info(Pyn_i)
@@ -126,6 +151,9 @@ for column in df.columns:
     logger.info("==计算 " + column + " 的IV 值 ==============================================================")
 
     df_column = df[[column, 'y']]
+    # 增加一列 cnt 列 用于计算
+    df_column['cnt'] = 0
+
     logger.debug(df_column)
     IV_column(df_column, Y_total, N_total, column)
 

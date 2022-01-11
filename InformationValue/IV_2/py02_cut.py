@@ -25,7 +25,7 @@ df['cut_group_xi'] = pd.cut(df['xi'], bins=4, precision=0)
 # 下面这段代码有误，无法cut varchar 类型的 枚举值
 # df['cut_group_xv'] = pd.cut(df['xv'], bins=4)  # varchar 类型不适用 precision参数
 
-df['cut_group_xv'] = '['+df['xv']+']'
+df['cut_group_xv'] = '[' + df['xv'] + ']'
 
 # TODO: 合并小分箱，连续分箱需要连续合并，枚举分箱可以小+小合并
 
