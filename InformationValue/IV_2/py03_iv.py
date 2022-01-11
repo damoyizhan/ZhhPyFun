@@ -81,7 +81,7 @@ def IV_column(df_column, Y_total, N_total, __column):
 
     # 计算 iv[i] = (Py[i] - Pn[i]) * woe[i]
 
-    IV_i= (PY_i -PN_i)*WOE_i
+    IV_i = (PY_i - PN_i) * WOE_i
     logger.info("\n %s" % PY_i)
     logger.info("\n %s" % PN_i)
     logger.info("\n %s" % IV_i)
